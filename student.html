@@ -11,35 +11,45 @@
     </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light ">
-            <a class="navbar-brand" href="#">Student Dashboard</a>
+    <header class=" text-bg-dark">
+        
+        <div class="navbar navbar-expand-lg navbar-light bg-light " style="display: flex; justify-content: space-between;">
+          <a href="teacher.html" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
+          Student Dashboard</a>
+          <div class="text-end">
+            <button type="button" class="btn btn-danger">Log Out</button>
             <a class="btn btn-link" href="teacher.html">
-                <i class="fas fa-exchange-alt"></i>
-            </a>
-        </nav>
+              <i class="fas fa-exchange-alt"></i>
+          </a>
+          </div>
+        </div>
+      
     </header>
 
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Course Selection</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Create Exam</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Browse Exams</a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
+    <div class="container-fluid" style="display:contents;">
+        <div class="row" style="display: flex;">
+            <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:auto; background-color:#333A73;">
+                <ul class="nav nav-pills flex-column mb-auto">
+                  <li class="nav-item">
+                    <a href="course_selection_student.html" class="nav-link text-white" >
+                      <svg class="bi pe-none me-2" width="16" height="16"></svg>
+                      Course Selection
+                    </a>
+                  </li>
+                  
+                  <li>
+                    <a href="show_exam.html" class="nav-link text-white">
+                      <svg class="bi pe-none me-2" width="16" height="16"></svg>
+                      Show Exams
+                    </a>
+                  </li>
+                  
+                </ul>
+                
+              </div>
 
             
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <main role="main" class="col-md-9 px-md-4" style="display: inline;">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                     <h1 class="h2 justify-content-center">Welcome, Student!</h1>
                 </div>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Selection</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="text-bg-dark">
+        <div class="navbar navbar-expand-lg navbar-light bg-light" style="display: flex; justify-content: space-between;">
+            <a href="student.html" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
+                Student Dashboard
+            </a>
+            <div class="text-end">
+                <button type="button" class="btn btn-danger">Log Out</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid" style="display:contents;">
+        <div class="row" style="display: flex;">
+            <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:auto; background-color:#333A73;">
+                <ul class="nav nav-pills flex-column mb-auto">
+                    <li class="nav-item">
+                        <a href="course_selection_student.html" class="nav-link active">
+                            <svg class="bi pe-none me-2" width="16" height="16"></svg>
+                            Course Selection
+                        </a>
+                    </li>
+                    <li>
+                        <a href="show_exams.html" class="nav-link text-white">
+                            <svg class="bi pe-none me-2" width="16" height="16"></svg>
+                            Show Exams
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <main role="main" class="col-md-9 px-md-4" style="display:inline;">
+                
+                <h2 class="mt-4">Course Selection</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Course ID</th>
+                                <th>Course Name</th>
+                                <th>Instructor</th>
+                                <th>Credit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>435</td>
+                                <td>Formal Languages and Automata</td>
+                                <td>Murat Ak</td>
+                                <td>3</td>
+                            </tr>
+                            <tr>
+                                <td>409</td>
+                                <td>Introduction to Natural Language Processing</td>
+                                <td>Prof. Melih Günay</td>
+                                <td>4</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="courseId">Course ID</label>
+                        <input type="text" class="form-control" id="courseId" placeholder="Enter Course ID">
+                    </div>
+                    <div class="form-group">
+                        <label for="courseName">Course Name</label>
+                        <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Enroll</button>
+                </form>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
