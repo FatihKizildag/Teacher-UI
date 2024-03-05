@@ -1,3 +1,5 @@
+<?php $currentPage = 'course_selection.php'; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +12,7 @@
     <header class=" text-bg-dark">
         
           <div class="navbar navbar-expand-lg navbar-light bg-light " style="display: flex; justify-content: space-between;">
-            <a href="teacher.html" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
+            <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
             Teacher Dashboard</a>
             <div class="text-end">
               <button type="button" class="btn btn-danger">Log Out</button>
@@ -20,30 +22,7 @@
       </header>
     <div class="container-fluid" style="display:contents;">
         <div class="row" style="display: flex;">
-            <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height:auto; background-color:#333A73;">
-                <ul class="nav nav-pills flex-column mb-auto">
-                  <li class="nav-item">
-                    <a href="course_selection.html" class="nav-link active" >
-                      <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                      Course Selection
-                    </a>
-                  </li>
-                  <li>
-                    <a href="create_exam.html" class="nav-link text-white">
-                      <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                      Create Exam
-                    </a>
-                  </li>
-                  <li>
-                    <a href="browse_exams.html" class="nav-link text-white">
-                      <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                      Browse Exams
-                    </a>
-                  </li>
-                  
-                </ul>
-                
-              </div>
+            <?php include 'CUF/teacher_navbar.php'; ?>
 
             <main role="main" class="col-md-9 px-md-4">
                     
