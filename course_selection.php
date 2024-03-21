@@ -1,31 +1,12 @@
-<?php $currentPage = 'course_selection.php'; ?>
 <?php
+$currentPage = 'course_selection.php';
+include './connection/db_connection.php';
 
-// $courses = [
-//     [
-//         'ID' => 1,
-//         'NAME' => 'Web Prog',
-//         'NumofStudents' => 12,
-//         'NumofExams' => 2
-//     ],
-//     [
-//         'ID' => 2,
-//         'NAME' => 'Algorithm',
-//         'NumofStudents' => 99,
-//         'NumofExams' => 3
-//     ],
-//     [
-//         'ID' =>3,
-//         'NAME' => 'Introduction to Computer Science',
-//         'NumofStudents' => 45,
-//         'NumofExams' => 2,
-//     ]
-   
-// ];
-$jsonobj = '[{"ID":1,"NAME":"WebProg", "NumofStudents":12, "NumofExams":2},{"ID":2,"NAME":"Introduction to Computer Science", "NumofStudents":99, "NumofExams":3},{"ID":3,"NAME":"Algorithm", "NumofStudents":45, "NumofExams":2}]';
-$courses = json_decode($jsonobj,true);
-//var_dump($courses); info about decoded courses array
-
+$sql = "SELECT courses.courseID, courses.courseName, instructors.instructorName, courses.credit
+        FROM courses
+        INNER JOIN instructors ON courses.instructorID = instructors.instructorID
+        WHERE instructors.instructorID = 1"; // 1 numaralı öğretmenin kurslarını çekiyoruz
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +34,7 @@ $courses = json_decode($jsonobj,true);
     </style>
 </head>
 <body>
-    <?php include './CUF/student_header.php'; ?>
+    <?php include './CUF/teacher_header.php'; ?>
     <div class="container-fluid" style="display:contents;">
         <div class="row" style="display: flex;">
             <?php include 'CUF/teacher_navbar.php'; ?>
@@ -64,18 +45,24 @@ $courses = json_decode($jsonobj,true);
                     <table>
                         <tr>
                             <th>ID</th>
-                            <th>NAME</th>
-                            <th>NumofStudents</th>
-                            <th>NumofExams</th>
+                            <th>Course Name</th>
+                            <th>Instructor</th>
+                            <th>Credit</th>
                         </tr>
-                        <?php foreach ($courses as $course): ?>
+                        <?php if ($result->num_rows > 0): ?>
+                            <?php while ($row = $result->fetch_assoc()): ?>
+                                <tr>
+                                    <td><?php echo $row["courseID"]; ?></td>
+                                    <td><?php echo $row["courseName"]; ?></td>
+                                    <td><?php echo $row["instructorName"]; ?></td>
+                                    <td><?php echo $row["credit"]; ?></td>
+                                </tr>
+                            <?php endwhile; ?>
+                        <?php else: ?>
                             <tr>
-                                <td><?php echo $course["ID"]; ?></td>
-                                <td><?php echo $course["NAME"]; ?></td>
-                                <td><?php echo $course["NumofStudents"]; ?></td>
-                                <td><?php echo $course["NumofExams"]; ?></td>
+                                <td colspan="4">No courses found.</td>
                             </tr>
-                        <?php endforeach; ?>
+                        <?php endif; ?>
                     </table>
                 </div>
             </main>

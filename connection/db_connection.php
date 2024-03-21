@@ -3,7 +3,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "your_database_name";
+$database = "obs_system";
 
 // Veritabanı bağlantısını oluşturun
 $conn = new mysqli($servername, $username, $password, $database);

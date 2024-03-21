@@ -9,17 +9,7 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class=" text-bg-dark">
-        
-        <div class="navbar navbar-expand-lg navbar-light bg-light " style="display: flex; justify-content: space-between;">
-          <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
-          Teacher Dashboard</a>
-          <div class="text-end">
-            <button type="button" class="btn btn-danger">Log Out</button>
-          </div>
-        </div>
-      
-    </header>
+    <?php include 'CUF/teacher_header.php'; ?>
 
     <div class="container-fluid" style="display:contents;">
         <div class="row" style="display: flex;">

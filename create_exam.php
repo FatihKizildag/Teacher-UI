@@ -1,5 +1,36 @@
-<?php $currentPage = 'create_exam.php'; ?>
+<?php $currentPage = 'create_exam.php'; 
+include './connection/db_connection.php';
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Formdan gelen verileri al
+    $courseId = $_POST["courseId"];
+    $courseName = $_POST["courseName"];
+    $examTypes = $_POST["gradingType"];
+    $percentages = $_POST["percentage"];
+
+    // Kurs bilgilerini exam_list tablosuna eklemek için SQL sorgusu oluştur
+    $sql = "INSERT INTO exam_list (courseID, courseName, examType, percentage) VALUES ";
+
+    // Her sınav türü ve yüzdesi için SQL değerlerini ekle
+    for ($i = 0; $i < count($examTypes); $i++) {
+        // Değerlerin güvenliğini sağlamak için prepared statement kullanılması önerilir
+        $sql .= "('$courseId', '$courseName', '$examTypes[$i]', '$percentages[$i]')";
+
+        // Sonuncu değilse virgül ekle
+        if ($i < count($examTypes) - 1) {
+            $sql .= ", ";
+        }
+    }
+
+    // Sorguyu çalıştır
+    if ($conn->query($sql) === TRUE) {
+        echo "Kurs başarıyla eklendi.";
+    } else {
+        echo "Hata: " . $sql . "<br>" . $conn->error;
+    }
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,31 +40,21 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class=" text-bg-dark">
-        
-          <div class="navbar navbar-expand-lg navbar-light bg-light " style="display: flex; justify-content: space-between;">
-            <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
-            Teacher Dashboard</a>
-            <div class="text-end">
-              <button type="button" class="btn btn-danger">Log Out</button>
-            </div>
-          </div>
-        
-      </header>
+    <?php include 'CUF/teacher_header.php'; ?>
     <div class="container-fluid" style="display:contents;">
         <div class="row" >
             <?php include 'CUF/teacher_navbar.php'; ?>
 
             <main role="main" class="col-md-9 px-md-4">
                 
-                <form id="courseForm">
+                <form id="courseForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
                     <div class="form-group">
                         <label for="courseId">Course ID</label>
-                        <input type="text" class="form-control" id="courseId" placeholder="Enter Course ID">
+                        <input type="text" class="form-control" id="courseId" name="courseId" placeholder="Enter Course ID">
                     </div>
                     <div class="form-group">
                         <label for="courseName">Course Name</label>
-                        <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name">
+                        <input type="text" class="form-control" id="courseName" name="courseName" placeholder="Enter Course Name">
                     </div>
                     <div id="gradingFields">
                         <div class="form-group">
