@@ -1,4 +1,32 @@
 <?php $currentPage = 'course_selection.php'; ?>
+<?php
+
+// $courses = [
+//     [
+//         'ID' => 1,
+//         'NAME' => 'Web Prog',
+//         'NumofStudents' => 12,
+//         'NumofExams' => 2
+//     ],
+//     [
+//         'ID' => 2,
+//         'NAME' => 'Algorithm',
+//         'NumofStudents' => 99,
+//         'NumofExams' => 3
+//     ],
+//     [
+//         'ID' =>3,
+//         'NAME' => 'Introduction to Computer Science',
+//         'NumofStudents' => 45,
+//         'NumofExams' => 2,
+//     ]
+   
+// ];
+$jsonobj = '[{"ID":1,"NAME":"WebProg", "NumofStudents":12, "NumofExams":2},{"ID":2,"NAME":"Introduction to Computer Science", "NumofStudents":99, "NumofExams":3},{"ID":3,"NAME":"Algorithm", "NumofStudents":45, "NumofExams":2}]';
+$courses = json_decode($jsonobj,true);
+//var_dump($courses); info about decoded courses array
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,61 +35,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Selection</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
-    <header class=" text-bg-dark">
-        
-          <div class="navbar navbar-expand-lg navbar-light bg-light " style="display: flex; justify-content: space-between;">
-            <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
-            Teacher Dashboard</a>
-            <div class="text-end">
-              <button type="button" class="btn btn-danger">Log Out</button>
-            </div>
-          </div>
-        
-      </header>
+    <?php include './CUF/student_header.php'; ?>
     <div class="container-fluid" style="display:contents;">
         <div class="row" style="display: flex;">
             <?php include 'CUF/teacher_navbar.php'; ?>
 
-            <main role="main" class="col-md-9 px-md-4">
-                    
+            <main role="main" class="col-md-9 px-md-4" style="display:inline;">
+                <h2 class="mt-4">Show Courses</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>NumofStudents</th>
+                            <th>NumofExams</th>
+                        </tr>
+                        <?php foreach ($courses as $course): ?>
                             <tr>
-                                <th scope="col">Course ID</th>
-                                <th scope="col">Course Name</th>
-                                <th scope="col">Course Grading </th>
-                                <th scope="col">Course Enrollment </th>
+                                <td><?php echo $course["ID"]; ?></td>
+                                <td><?php echo $course["NAME"]; ?></td>
+                                <td><?php echo $course["NumofStudents"]; ?></td>
+                                <td><?php echo $course["NumofExams"]; ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th scope="row">108</th>
-                                <td>Introduction to Computer Science</td>
-                                <td>Midterm + Final</td>
-                                <td>45</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">204</th>
-                                <td>Data Structures and Algorithms</td>
-                                <td>Midterm + Lab Quiz + Final</td>
-                                <td>55</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">220</th>
-                                <td>Database Management Systems</td>
-                                <td>Midterm + Project + Final</td>
-                                <td>55</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">236</th>
-                                <td>Web Development</td>
-                                <td>Midterm + Quizes + Final</td>
-                                <td>35</td>
-                            </tr>
-                        </tbody>
+                        <?php endforeach; ?>
                     </table>
                 </div>
             </main>

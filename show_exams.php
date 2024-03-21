@@ -1,4 +1,29 @@
 <?php $currentPage = 'show_exams.php'; ?>
+<?php
+
+$courses = [
+    [
+        'ID' => 1,
+        'NAME' => 'Web Prog',
+        'NumofStudents' => 12,
+        'NumofExams' => 2
+    ],
+    [
+        'ID' => 2,
+        'NAME' => 'Algorithm',
+        'NumofStudents' => 99,
+        'NumofExams' => 3
+    ],
+    [
+        'ID' =>3,
+        'NAME' => 'Introduction to Computer Science',
+        'NumofStudents' => 45,
+        'NumofExams' => 2,
+    ]
+   
+];
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +31,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Show Exams</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
 </head>
 <body>
     <?php include 'CUF/student_header.php'; ?>
@@ -17,35 +58,21 @@
             <main role="main" class="col-md-9 px-md-4" style="display:inline;">
                 <h2 class="mt-4">Show Exams</h2>
                 <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
+                    <table>
+                        <tr>
+                            <th>ID</th>
+                            <th>NAME</th>
+                            <th>NumofStudents</th>
+                            <th>NumofExams</th>
+                        </tr>
+                        <?php foreach ($courses as $course): ?>
                             <tr>
-                                <th>Course ID</th>
-                                <th>Course Name</th>
-                                <th>Exam Type</th>
-                                <th>Exam Date</th>
+                                <td><?php echo $course['ID']; ?></td>
+                                <td><?php echo $course['NAME']; ?></td>
+                                <td><?php echo $course['NumofStudents']; ?></td>
+                                <td><?php echo $course['NumofExams']; ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>108</td>
-                                <td>Introduction to Computer Science</td>
-                                <td>Midterm</td>
-                                <td>2024-03-15</td>
-                            </tr>
-                            <tr>
-                                <td>204</td>
-                                <td>Data Structures and Algorithms</td>
-                                <td>Lab Quiz</td>
-                                <td>2024-05-20</td>
-                            </tr>
-                            <tr>
-                              <td>136</td>
-                              <td>Web Development</td>
-                              <td>Quiz</td>
-                              <td>2024-03-04</td>
-                            </tr>
-                        </tbody>
+                        <?php endforeach; ?>
                     </table>
                 </div>
             </main>
