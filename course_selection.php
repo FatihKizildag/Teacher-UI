@@ -5,7 +5,7 @@ include './connection/db_connection.php';
 $sql = "SELECT courses.courseID, courses.courseName, instructors.instructorName, courses.credit
         FROM courses
         INNER JOIN instructors ON courses.instructorID = instructors.instructorID
-        WHERE instructors.instructorID = 1"; // 1 numaralı öğretmenin kurslarını çekiyoruz
+        WHERE instructors.instructorID = 1"; 
 $result = $conn->query($sql);
 ?>
 
