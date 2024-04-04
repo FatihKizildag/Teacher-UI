@@ -1,8 +1,17 @@
 <?php 
+session_start();
+
 $currentPage = 'browse_exams.php';
 include './connection/db_connection.php';
 
-$coursesQuery = "SELECT * FROM exam_list";
+if(isset($_SESSION['instructorID'])) {
+    $instructorID = $_SESSION['instructorID'];
+} else {
+    header("Location: index.php");
+    exit();
+}
+
+$coursesQuery = "SELECT * FROM exam_list WHERE courseName IN (SELECT courseName FROM courses WHERE instructorID = $instructorID)";
 $coursesResult = $conn->query($coursesQuery);
 
 $courses = [];
@@ -11,12 +20,13 @@ if ($coursesResult->num_rows > 0) {
         $courses[] = $row;
     }
 }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_id"])) {
     $deleteID = $_POST["delete_id"];
     $deleteQuery = "DELETE FROM exam_list WHERE courseID = $deleteID";
     
     if ($conn->query($deleteQuery) === TRUE) {
-        echo '<div class="alert alert-success" role="alert">Kurs başarıyla silindi.</div>';
+        echo '<div class="alert alert-success" role="alert">Course successfully deleted.</div>';
     } else {
         echo '<div class="alert alert-danger" role="alert">Hata: ' . $conn->error . '</div>';
     }
@@ -31,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
     $updateQuery = "UPDATE exam_list SET courseName = '$newCourseName', examType = '$newExamType', percentage = '$newPercentage' WHERE courseID = $editCourseID";
 
     if ($conn->query($updateQuery) === TRUE) {
-        echo '<div class="alert alert-success" role="alert">Kurs başarıyla güncellendi.</div>';
+        echo '<div class="alert alert-success" role="alert">Course successfully updated.</div>';
     } else {
         echo '<div class="alert alert-danger" role="alert">Hata: ' . $conn->error . '</div>';
     }
@@ -134,11 +144,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
             $('#editModal').modal('show');
         }
     </script>
-    <script>
-    $('#editForm').submit(function() {
-        location.reload();
-    });
-</script>
-
 </body>
 </html>
