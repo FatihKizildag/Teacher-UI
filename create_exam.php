@@ -1,40 +1,68 @@
 <?php 
 $currentPage = 'create_exam.php'; 
 include './connection/db_connection.php';
-
+$error = ""; 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
     $courseId = $_POST["courseId"];
     $courseName = $_POST["courseName"];
-    $examTypes = $_POST["gradingType"];
-    $percentages = $_POST["percentage"];
+    $examType = $_POST["gradingType"];
+    $percentage = $_POST["percentage"];
 
-    $courseCheckQuery = "SELECT * FROM courses WHERE courseID = $courseId";
-    $courseCheckResult = $conn->query($courseCheckQuery);
+    $totalPercentage = (int)$percentage;
 
-    if ($courseCheckResult->num_rows > 0) {
-        $sql = "INSERT INTO exam_list (courseID, courseName, examType, percentage) VALUES ";
+    $finalCount = $examType === "final" ? 1 : 0;
+    
+    function function_alert($message) { 
+        echo "<script>alert('$message');</script>"; 
+    } 
 
-        for ($i = 0; $i < count($examTypes); $i++) {
-            $sql .= "('$courseId', '$courseName', '$examTypes[$i]', '$percentages[$i]')";
+    $existingExamsQuery = "SELECT examType, percentage FROM exam_list WHERE courseID = $courseId";
+    $existingExamsResult = $conn->query($existingExamsQuery);
+    $existingPercentages = [];
+    $existingFinalCount = 0;
 
-            if ($i < count($examTypes) - 1) {
-                $sql .= ", ";
+    if ($existingExamsResult->num_rows > 0) {
+        while ($row = $existingExamsResult->fetch_assoc()) {
+            $existingPercentages[$row['examType']] = (int)$row['percentage'];
+            if ($row['examType'] === "final") {
+                $existingFinalCount++;
             }
         }
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Kurs başarıyla eklendi.";
-        } else {
-            echo "Hata: " . $sql . "<br>" . $conn->error;
-        }
-    } else {
-        
-        echo "Hata: Belirtilen kurs bulunamadı. Lütfen geçerli bir kurs ID'si girin.";
     }
-}
+
+    if ($existingFinalCount > 0 && $finalCount > 0) {
+        function_alert('Only one final exam is allowed.');
+        exit();
+    }
+
+    if (isset($existingPercentages[$examType])) {
+        $existingPercentage = $existingPercentages[$examType];
+        $totalPercentage += $existingPercentage;
+    }
+
+    foreach ($existingPercentages as $existingPercentage) {
+        $totalPercentage += $existingPercentage;
+    }
+
+    if ($totalPercentage > 100) {
+        function_alert('Total percentage must be 100 or less.');
+        exit();
+    }
+
+    $sql = "INSERT INTO exam_list (courseID, courseName, examType, percentage) VALUES ";
+    $sql .= "('$courseId', '$courseName', CONCAT(IFNULL(examType, ''), ',', '$examType'), '$totalPercentage') ";
+    $sql .= "ON DUPLICATE KEY UPDATE examType = CONCAT(IFNULL(examType, ''), ',', '$examType'), percentage = '$totalPercentage'";
+
+    if ($conn->query($sql) === TRUE) {
+        function_alert('Course successfully added or updated');
+    } else {
+        $errorMessage = "Error: " . $sql . "<br>" . $conn->error;
+        function_alert($errorMessage);
+    }
+} 
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +93,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <label for="grading">Course Grading</label>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <select class="form-control gradingType" name="gradingType[]">
+                                    <select class="form-control gradingType" name="gradingType">
                                         <option value="">Select Exam Type</option>
                                         <option value="midterm">Midterm</option>
                                         <option value="final">Final</option>
@@ -74,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control percentage" name="percentage[]" placeholder="Percentage">
+                                    <input type="number" class="form-control percentage" name="percentage" placeholder="Percentage">
                                 </div>
                             </div>
                         </div>
@@ -84,7 +112,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </main>
         </div>
     </div>
-    
+    <script>
+        document.getElementById('courseForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var courseID = document.getElementById('courseId').value;
+            var courseName = document.getElementById('courseName').value;
+            
+
+            if (courseID < 0 || isNaN(courseID) ) {
+                alert('Please fill out all fields correctly.');
+                return;
+            }
+            
+            this.submit();
+        });
+    </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

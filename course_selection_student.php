@@ -1,7 +1,15 @@
 <?php $currentPage = 'course_selection_student.php'; 
 include './connection/db_connection.php';
 
-$studentID = 1;
+session_start();
+
+if(isset($_SESSION['studentID'])) {
+    $studentID = $_SESSION['studentID'];
+} else {
+    header("Location: index.php");
+    exit();
+}
+
 $sql = "SELECT courses.courseID, courses.courseName, courses.instructor, courses.credit
         FROM courses
         INNER JOIN student_courses ON courses.courseID = student_courses.courseID
@@ -48,6 +56,7 @@ $conn->close();
                             </tr>
                         </thead>
                         <tbody>
+                        <?php if ($result->num_rows > 0): ?>
                             <?php foreach ($courses as $course): ?>
                                 <tr>
                                     <td><?php echo $course["courseID"]; ?></td>
@@ -56,25 +65,31 @@ $conn->close();
                                     <td><?php echo $course["credit"]; ?></td>
                                 </tr>
                             <?php endforeach; ?>
+                            <?php else: ?>
+                            <tr>
+                                <td colspan="4">No courses found.</td>
+                            </tr>
+                        <?php endif; ?>
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <form>
+                        <div class="form-group">
+                            <label for="courseId">Course ID</label>
+                            <input type="text" class="form-control" id="courseId" placeholder="Enter Course ID">
+                        </div>
+                        <div class="form-group">
+                            <label for="courseName">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Enroll</button>
+                    </form>
                 </div>
             </main>
         </div>
     </div>
-    <div>
-                <form>
-                    <div class="form-group">
-                        <label for="courseId">Course ID</label>
-                        <input type="text" class="form-control" id="courseId" placeholder="Enter Course ID">
-                    </div>
-                    <div class="form-group">
-                        <label for="courseName">Course Name</label>
-                        <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Enroll</button>
-                </form>
-    </div>
+    
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

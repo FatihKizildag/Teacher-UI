@@ -1,11 +1,20 @@
 <?php
 $currentPage = 'course_selection.php';
 include './connection/db_connection.php';
+session_start(); 
+
+if(isset($_SESSION['instructorID'])) {
+    $instructorID = $_SESSION['instructorID'];
+} else {
+    header("Location: index.php");
+    exit();
+}
+
 
 $sql = "SELECT courses.courseID, courses.courseName, instructors.instructorName, courses.credit
         FROM courses
         INNER JOIN instructors ON courses.instructorID = instructors.instructorID
-        WHERE instructors.instructorID = 1"; 
+        WHERE instructors.instructorID = $instructorID"; 
 $result = $conn->query($sql);
 ?>
 

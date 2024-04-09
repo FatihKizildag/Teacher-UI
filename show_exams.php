@@ -1,35 +1,18 @@
-<?php $currentPage = 'show_exams.php';
+<?php 
+$currentPage = 'show_exams.php';
 include './connection/db_connection.php';
-// $courses = [
-//     [
-//         'ID' => 1,
-//         'NAME' => 'Web Prog',
-//         'NumofStudents' => 12,
-//         'NumofExams' => 2
-//     ],
-//     [
-//         'ID' => 2,
-//         'NAME' => 'Algorithm',
-//         'NumofStudents' => 99,
-//         'NumofExams' => 3
-//     ],
-//     [
-//         'ID' =>3,
-//         'NAME' => 'Introduction to Computer Science',
-//         'NumofStudents' => 45,
-//         'NumofExams' => 2,
-//     ]
-   
-// ];
 
-$sql = "SELECT courseID, courseName, examType, percentage FROM exam_list";
+$sql = "SELECT courseID, courseName, examType, percentage, class FROM exam_list";
 $result = $conn->query($sql);
 
-// Çekilen verileri dizi olarak saklama
-$courses = [];
+$classes = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        $courses[] = $row;
+        $class = $row['class'];
+        if (!isset($classes[$class])) {
+            $classes[$class] = [];
+        }
+        $classes[$class][] = $row;
     }
 }
 
@@ -68,31 +51,30 @@ $conn->close();
             <?php include 'CUF/student_navbar.php'?>
 
             <main role="main" class="col-md-9 px-md-4" style="display:inline;">
-                <h2 class="mt-4">Show Exams</h2>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th>Course ID</th>
-                            <th>Course Name</th>
-                            <th>Exam Type</th>
-                            <th>Percentage</th>
-                        </tr>
-                        <?php foreach ($courses as $course): ?>
+                <?php foreach ($classes as $class => $exams): ?>
+                    <h2 class="mt-4">Class <?php echo $class; ?> Exams</h2>
+                    <div class="table-responsive">
+                        <table>
                             <tr>
-                                <td><?php echo $course['courseID']; ?></td>
-                                <td><?php echo $course['courseName']; ?></td>
-                                <td><?php echo $course['examType']; ?></td>
-                                <td><?php echo $course['percentage']; ?></td>
+                                <th>Course ID</th>
+                                <th>Course Name</th>
+                                <th>Exam Type</th>
+                                <th>Percentage</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </table>
-                </div>
+                            <?php foreach ($exams as $exam): ?>
+                                <tr>
+                                    <td><?php echo $exam['courseID']; ?></td>
+                                    <td><?php echo $exam['courseName']; ?></td>
+                                    <td><?php echo $exam['examType']; ?></td>
+                                    <td><?php echo $exam['percentage']; ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </table>
+                    </div>
+                <?php endforeach; ?>
             </main>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>

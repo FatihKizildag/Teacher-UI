@@ -1,51 +1,103 @@
+<?php
+include 'connection/db_connection.php';
+
+$error = ""; 
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $userID = $_POST["userID"];
+    $password = $_POST["password"];
+
+    $userID = htmlspecialchars($userID);
+    $password = htmlspecialchars($password);
+
+    if (!empty($userID) && !empty($password)) {
+        if (!is_numeric($userID) || $userID <= 0) {
+            $error = "User ID must be a positive number.";
+        } elseif (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $password)) {
+            $error = "Password cannot contain special characters.";
+        } else {
+            $userID = $conn->real_escape_string($userID);
+            $password = $conn->real_escape_string($password);
+            
+            $hashedPassword = md5($password);
+
+            $query = "SELECT * FROM user_list WHERE userID = '$userID' AND hashedPassword = '$hashedPassword'";
+            $result = $conn->query($query);
+            
+            if ($result->num_rows > 0) {
+                $user = $result->fetch_assoc();
+                if ($user['userType'] == 'teacher') {
+                    session_start(); 
+                    $_SESSION['instructorID'] = $userID; 
+                    header("Location: teacher.php");
+                    exit();
+                } else {
+                    session_start();
+                    $_SESSION['studentID'] = $userID; 
+                    header("Location: student.php");
+                    exit();
+                }
+            } else {
+                $error = "Username or password incorrect.";
+            }
+        }
+    } else {
+        $error = "Username and password fields cannot be left blank.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Dashboard</title>
+    <title>Login</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <style>
-
-    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
-    
-      <header class=" text-bg-dark">
-        
-          <div class="navbar navbar-expand-lg navbar-light bg-light " style="display: flex; justify-content: space-between;">
-            <a href="index.php" class="d-flex align-items-center mb-2 mb-lg-0 navbar-brand" style="color:#222; font-weight: bold;">
-            Teacher Dashboard</a>
-            <div class="text-end">
-              <button type="button" class="btn btn-danger">Log Out</button>
-              <a class="btn btn-link" href="student.php">
-                <i class="fas fa-exchange-alt"></i>
-            </a>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Login</h3>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($error)) : ?>
+                            <div class="alert alert-danger"><?= $error ?></div>
+                        <?php endif; ?>
+                        <form id="loginForm" method="post">
+                            <div class="form-group">
+                                <label for="userID">User ID</label>
+                                <input type="text" class="form-control" id="userID" name="userID" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>
+                        <div id="errorAlert" class="alert alert-danger mt-3" style="display: none;"></div>
+                    </div>
+                </div>
             </div>
-          </div>
-        
-      </header>
-
-      <div class="container-fluid" style="display:contents;">
-        <div class="row" style="display: flex;">
-            <?php include 'CUF/teacher_navbar.php'; ?>
-
-            <main role="main" class="col-md-9  px-md-4">
-                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2 justify-content-center">Welcome, Teacher!</h1>
-                </div>
-                <div class="container">
-                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, corporis voluptatum quae optio sed illum. Tenetur veniam qui distinctio, culpa cumque expedita consectetur earum, molestias natus voluptatibus ipsum reiciendis! Necessitatibus in harum dicta accusamus soluta. Ratione ipsam tenetur iusto officia saepe, nobis sint accusamus aliquid fuga obcaecati, provident suscipit in repellat asperiores, sunt at blanditiis. Perspiciatis sit et sed porro suscipit facere aut reiciendis. Sint iste inventore nemo deleniti, minima, id numquam blanditiis aut vitae sapiente provident, hic expedita nam dignissimos laboriosam. Nisi, neque quos impedit eaque dolorem fugiat voluptatum! Dolore aperiam nam unde minus. Enim veritatis voluptate consectetur aspernatur!</p>
-                </div>
-            </main>
         </div>
     </div>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            var userID = document.getElementById('userID').value;
+            var password = document.getElementById('password').value;
 
-
+            if (userID <= 0 || isNaN(userID)) {
+                alert('User ID must be a positive number.');
+                return;
+            }
+            this.submit();
+        });
+    </script>
 </body>
 </html>
