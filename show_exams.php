@@ -2,7 +2,7 @@
 $currentPage = 'show_exams.php';
 include './connection/db_connection.php';
 
-$sql = "SELECT courseID, courseName, examType, percentage, class FROM exam_list";
+$sql = "SELECT * FROM exam_list ";
 $result = $conn->query($sql);
 
 $classes = [];
@@ -65,7 +65,7 @@ $conn->close();
                                 <tr>
                                     <td><?php echo $exam['courseID']; ?></td>
                                     <td><?php echo $exam['courseName']; ?></td>
-                                    <td><?php echo $exam['examType']; ?></td>
+                                    <td><?php echo $exam['exam_type']; ?></td>
                                     <td><?php echo $exam['percentage']; ?></td>
                                 </tr>
                             <?php endforeach; ?>

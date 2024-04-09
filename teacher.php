@@ -1,8 +1,16 @@
 <?php
+include './connection/db_connection.php';
 session_start();
 
 if(isset($_SESSION['instructorID'])) {
     $instructorID = $_SESSION['instructorID'];
+    $instructorNameQuery = "SELECT instructorName FROM instructors WHERE instructorID = $instructorID";
+    $result = $conn->query($instructorNameQuery);
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $instructorName = $row['instructorName'];
+        $_SESSION['instructorName'] = $instructorName;
+    }
 } else {
     header("Location: index.php");
     exit();
@@ -30,7 +38,7 @@ if(isset($_SESSION['instructorID'])) {
 
             <main role="main" class="col-md-9  px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2 justify-content-center">Welcome, <?php echo $instructorID; ?>!</h1>
+                    <h1 class="h2 justify-content-center">Welcome, <?php echo $instructorName; ?>!</h1>
                 </div>
                 <div class="container">
                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab, corporis voluptatum quae optio sed illum. Tenetur veniam qui distinctio, culpa cumque expedita consectetur earum, molestias natus voluptatibus ipsum reiciendis! Necessitatibus in harum dicta accusamus soluta. Ratione ipsam tenetur iusto officia saepe, nobis sint accusamus aliquid fuga obcaecati, provident suscipit in repellat asperiores, sunt at blanditiis. Perspiciatis sit et sed porro suscipit facere aut reiciendis. Sint iste inventore nemo deleniti, minima, id numquam blanditiis aut vitae sapiente provident, hic expedita nam dignissimos laboriosam. Nisi, neque quos impedit eaque dolorem fugiat voluptatum! Dolore aperiam nam unde minus. Enim veritatis voluptate consectetur aspernatur!</p>

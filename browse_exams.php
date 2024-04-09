@@ -11,7 +11,11 @@ if(isset($_SESSION['instructorID'])) {
     exit();
 }
 
-$coursesQuery = "SELECT * FROM exam_list WHERE courseName IN (SELECT courseName FROM courses WHERE instructorID = $instructorID)";
+$coursesQuery = "SELECT c.courseID, c.courseName, e.examID, e.examName, e.type AS exam_type, e.percentage, e.updated_by, e.update_date
+                FROM courses AS c
+                INNER JOIN exam_list AS e ON c.courseID = e.courseID
+                WHERE c.instructorID = '$instructorID'";
+
 $coursesResult = $conn->query($coursesQuery);
 
 $courses = [];
@@ -23,27 +27,38 @@ if ($coursesResult->num_rows > 0) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["delete_id"])) {
     $deleteID = $_POST["delete_id"];
-    $deleteQuery = "DELETE FROM exam_list WHERE courseID = $deleteID";
+    $deleteQuery = "DELETE FROM exam_list WHERE examID = $deleteID";
     
     if ($conn->query($deleteQuery) === TRUE) {
         echo '<div class="alert alert-success" role="alert">Course successfully deleted.</div>';
     } else {
-        echo '<div class="alert alert-danger" role="alert">Hata: ' . $conn->error . '</div>';
+        echo '<div class="alert alert-danger" role="alert">Error: ' . $conn->error . '</div>';
     }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
     $editCourseID = $_POST["editCourseID"];
     $newCourseName = $_POST["courseName"];
-    $newExamType = $_POST["examType"];
+    $newExamType = $_POST["exam_type"];
     $newPercentage = $_POST["percentage"];
 
-    $updateQuery = "UPDATE exam_list SET courseName = '$newCourseName', examType = '$newExamType', percentage = '$newPercentage' WHERE courseID = $editCourseID";
+    $updateDate = date("Y-m-d H:i:s");
+
+    $updatedByID = $_SESSION['instructorID'];
+    $instructorQuery = "SELECT instructorName FROM instructors WHERE instructorID = $updatedByID";
+    $instructorResult = $conn->query($instructorQuery);
+    $updatedBy = "";
+    if ($instructorResult->num_rows > 0) {
+        $instructorData = $instructorResult->fetch_assoc();
+        $updatedBy = $instructorData['instructorName'];
+    }
+
+    $updateQuery = "UPDATE exam_list SET examName = '$newCourseName', type = '$newExamType', percentage = '$newPercentage', update_date = '$updateDate', updated_by = '$updatedBy' WHERE examID = $editCourseID";
 
     if ($conn->query($updateQuery) === TRUE) {
         echo '<div class="alert alert-success" role="alert">Course successfully updated.</div>';
     } else {
-        echo '<div class="alert alert-danger" role="alert">Hata: ' . $conn->error . '</div>';
+        echo '<div class="alert alert-danger" role="alert">Error: ' . $conn->error . '</div>';
     }
 }
 ?>
@@ -73,6 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
                                 <th>Course Name</th>
                                 <th>Exam Type</th>
                                 <th>Percentage</th>
+                                <th>Updated by</th>
+                                <th>Update Date</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -81,13 +98,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
                                 <tr>
                                     <td><?php echo $course["courseID"]; ?></td>
                                     <td><?php echo $course["courseName"]; ?></td>
-                                    <td><?php echo $course["examType"]; ?></td>
+                                    <td><?php echo $course["exam_type"]; ?></td>
                                     <td><?php echo $course["percentage"]; ?></td> 
+                                    <td><?php echo $course["updated_by"]?></td>
+                                    <td><?php echo $course["update_date"]?></td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-sm" onclick="openEditModal(<?php echo $course["courseID"]; ?>, '<?php echo $course["courseName"]; ?>', '<?php echo $course["examType"]; ?>', <?php echo $course["percentage"]; ?>)">Edit</button> 
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="openEditModal(<?php echo $course["examID"]; ?>, '<?php echo $course["courseName"]; ?>', '<?php echo $course["exam_type"]; ?>', <?php echo $course["percentage"]; ?>)">Edit</button> 
                                         <form method="post" style="display:inline;">
-                                            <input type="hidden" name="delete_id" value="<?php echo $course["courseID"]; ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bu kursu silmek istediğinize emin misiniz?')">Delete</button>
+                                            <input type="hidden" name="delete_id" value="<?php echo $course["examID"]; ?>">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this exam?')">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -117,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
                     </div>
                     <div class="form-group">
                         <label for="editExamType">Exam Type</label>
-                        <input type="text" class="form-control" id="editExamType" name="examType" required>
+                        <input type="text" class="form-control" id="editExamType" name="exam_type" required>
                     </div>
                     <div class="form-group">
                         <label for="editPercentage">Percentage</label>
@@ -136,10 +155,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editCourseID"])) {
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-        function openEditModal(courseID, courseName, examType, percentage) {
-            $('#editCourseID').val(courseID);
+        function openEditModal(examID, courseName, exam_type, percentage) {
+            $('#editCourseID').val(examID);
             $('#editCourseName').val(courseName);
-            $('#editExamType').val(examType);
+            $('#editExamType').val(exam_type);
             $('#editPercentage').val(percentage);
             $('#editModal').modal('show');
         }
