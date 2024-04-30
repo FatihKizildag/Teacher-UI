@@ -4,7 +4,12 @@
                 Student Dashboard
             </a>
             <div class="text-end">
-                <button type="button" class="btn btn-danger">Log Out</button>
+                <button id="logoutBtn" type="button" class="btn btn-danger">Log Out</button>
             </div>
         </div>
 </header>
+<script>
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            window.location.href = 'index.php'; 
+        });
+    </script>

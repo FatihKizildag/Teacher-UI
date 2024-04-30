@@ -2,10 +2,8 @@
 $currentPage = 'course_selection.php';
 include './connection/db_connection.php';
 
-$sql = "SELECT courses.courseID, courses.courseName, instructors.instructorName, courses.credit
-        FROM courses
-        INNER JOIN instructors ON courses.instructorID = instructors.instructorID
-        WHERE instructors.instructorID = 1"; 
+$sql = "SELECT *
+        FROM courses"; 
 $result = $conn->query($sql);
 ?>
 
@@ -40,31 +38,47 @@ $result = $conn->query($sql);
             <?php include 'CUF/teacher_navbar.php'; ?>
 
             <main role="main" class="col-md-9 px-md-4" style="display:inline;">
-                <h2 class="mt-4">Show Courses</h2>
-                <div class="table-responsive">
-                    <table>
-                        <tr>
-                            <th>ID</th>
-                            <th>Course Name</th>
-                            <th>Instructor</th>
-                            <th>Credit</th>
-                        </tr>
-                        <?php if ($result->num_rows > 0): ?>
-                            <?php while ($row = $result->fetch_assoc()): ?>
-                                <tr>
-                                    <td><?php echo $row["courseID"]; ?></td>
-                                    <td><?php echo $row["courseName"]; ?></td>
-                                    <td><?php echo $row["instructorName"]; ?></td>
-                                    <td><?php echo $row["credit"]; ?></td>
-                                </tr>
-                            <?php endwhile; ?>
-                        <?php else: ?>
+                <!-- <h2 class="mt-4">Create New Course</h2>
+                    <form method="post">
+                        <div class="form-group">
+                            <label for="courseName">Course Name</label>
+                            <input type="text" class="form-control" id="courseName" name="courseName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="credit">Credit</label>
+                            <input type="number" class="form-control" id="credit" name="credit" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Create Course</button>
+                    </form> -->
+                <h2 class="mt-4">Show All Courses</h2>
+                    <div class="table-responsive">
+                        <table>
                             <tr>
-                                <td colspan="4">No courses found.</td>
+                                <th>ID</th>
+                                <th>Course Name</th>
+                                <th>Instructor</th>
+                                <th>Credit</th>
+                                <th>Updated by</th>
+                                <th>Update Date</th>
                             </tr>
-                        <?php endif; ?>
-                    </table>
-                </div>
+                            <?php if ($result->num_rows > 0): ?>
+                                <?php while ($row = $result->fetch_assoc()): ?>
+                                    <tr>
+                                        <td><?php echo $row["courseID"]; ?></td>
+                                        <td><?php echo $row["courseName"]; ?></td>
+                                        <td><?php echo $row["instructor"]; ?></td>
+                                        <td><?php echo $row["credit"]; ?></td>
+                                        <td><?php echo $row["updated_by"]; ?></td>
+                                        <td><?php echo $row["update_date"]; ?></td>
+                                    </tr>
+                                <?php endwhile; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4">No courses found.</td>
+                                </tr>
+                            <?php endif; ?>
+                        </table>
+                    </div>
             </main>
         </div>
     </div>
