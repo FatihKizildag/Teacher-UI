@@ -1,6 +1,7 @@
 <?php 
 $currentPage = 'create_exam.php'; 
 include './connection/db_connection.php';
+
 session_start();
 
 if(isset($_SESSION['instructorID'])) {
@@ -16,7 +17,6 @@ if(isset($_SESSION['instructorID'])) {
     header("Location: index.php");
     exit();
 }
-
 
 function function_alert($message) { 
     echo "<script>alert('$message');</script>"; 

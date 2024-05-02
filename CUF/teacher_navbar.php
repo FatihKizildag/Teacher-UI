@@ -15,7 +15,7 @@
         <li>
             <a href="browse_exams.php" class="nav-link text-white <?php echo ($currentPage == 'browse_exams.php') ? 'active' : ''; ?>">
                 <svg class="bi pe-none me-2" width="16" height="16"></svg>
-                Browse Exams1
+                Browse Exams
             </a>
         </li>
     </ul>

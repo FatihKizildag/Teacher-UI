@@ -1,4 +1,4 @@
-<?php $currentPage = 'course_selection_student.php'; 
+<?php $currentPage = 'registered_courses.php'; 
 include './connection/db_connection.php';
 
 session_start();
@@ -33,7 +33,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Selection</title>
+    <title>Registered Courses</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <?php include 'CUF/student_header.php'; ?>
 </head>
@@ -44,7 +44,7 @@ $conn->close();
             <?php include 'CUF/student_navbar.php'?>
 
             <main role="main" class="col-md-9 px-md-4" style="display:inline;">
-                <h2 class="mt-4">Course Selection</h2>
+                <h2 class="mt-4">Registered Courses</h2>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
@@ -53,6 +53,7 @@ $conn->close();
                                 <th>Course Name</th>
                                 <th>Instructor</th>
                                 <th>Credit</th>
+                                <th>Edited by</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -63,6 +64,7 @@ $conn->close();
                                     <td><?php echo $course["courseName"]; ?></td>
                                     <td><?php echo $course["instructor"]; ?></td>
                                     <td><?php echo $course["credit"]; ?></td>
+                                    <td><?php echo $course["edited_by"]; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php else: ?>
@@ -73,19 +75,7 @@ $conn->close();
                         </tbody>
                     </table>
                 </div>
-                <div>
-                    <form>
-                        <div class="form-group">
-                            <label for="courseId">Course ID</label>
-                            <input type="text" class="form-control" id="courseId" placeholder="Enter Course ID">
-                        </div>
-                        <div class="form-group">
-                            <label for="courseName">Course Name</label>
-                            <input type="text" class="form-control" id="courseName" placeholder="Enter Course Name">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Enroll</button>
-                    </form>
-                </div>
+                
             </main>
         </div>
     </div>
