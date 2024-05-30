@@ -46,14 +46,13 @@ $conn->close();
             <main role="main" class="col-md-9 px-md-4" style="display:inline;">
                 <h2 class="mt-4">Registered Courses</h2>
                 <div class="table-responsive">
-                    <table class="table table-bordered">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Course ID</th>
                                 <th>Course Name</th>
                                 <th>Instructor</th>
                                 <th>Credit</th>
-                                <th>Edited by</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,7 +63,6 @@ $conn->close();
                                     <td><?php echo $course["courseName"]; ?></td>
                                     <td><?php echo $course["instructor"]; ?></td>
                                     <td><?php echo $course["credit"]; ?></td>
-                                    <td><?php echo $course["edited_by"]; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php else: ?>

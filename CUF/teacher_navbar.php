@@ -18,5 +18,11 @@
                 Browse Exams
             </a>
         </li>
+        <li class="nav-item">
+            <a href="course_list.php" class="nav-link text-white <?php echo ($currentPage == 'course_list.php') ? 'active' : ''; ?>" >
+                <svg class="bi pe-none me-2" width="16" height="16"></svg>
+                Course List
+            </a>
+        </li>
     </ul>
 </div>

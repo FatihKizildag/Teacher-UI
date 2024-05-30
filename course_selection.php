@@ -68,20 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Course Selection</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
+        
     </style>
 </head>
 <body>
@@ -112,6 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <button type="submit" class="btn btn-primary">Assign Student to Course</button>
                 </form>
+                <div id="responseMessage"></div>
             </main>
         </div>
     </div>
@@ -128,6 +116,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             
             this.submit();
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $('#assignForm').on('submit', function(e){
+                e.preventDefault();
+                var formData = $(this).serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: './connection/selection.php',
+                    data: formData,
+                    success: function(response){
+                        $('#responseMessage').html(response);
+                    }
+                });
+            });
         });
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

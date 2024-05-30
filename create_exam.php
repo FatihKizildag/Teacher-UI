@@ -1,4 +1,4 @@
-<?php 
+<?php
 $currentPage = 'create_exam.php'; 
 include './connection/db_connection.php';
 
@@ -18,58 +18,6 @@ if(isset($_SESSION['instructorID'])) {
     exit();
 }
 
-function function_alert($message) { 
-    echo "<script>alert('$message');</script>"; 
-} 
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $courseId = $_POST["courseId"];
-    $courseName = $_POST["courseName"];
-    $examType = $_POST["gradingType"];
-    $percentage = $_POST["percentage"];
-
-    if (empty($courseId) || empty($examType) || empty($percentage)) {
-        function_alert('Please fill out necessary fields.');
-        exit();
-    }
-    
-    $totalPercentageQuery = "SELECT SUM(percentage) AS total_percentage FROM exam_list WHERE courseID = $courseId";
-    $totalPercentageResult = $conn->query($totalPercentageQuery);
-    $totalPercentageRow = $totalPercentageResult->fetch_assoc();
-    $totalPercentage = $totalPercentageRow["total_percentage"] + $percentage;
-    
-    
-    if ($totalPercentage > 100) {
-        function_alert('Total percentage must be 100 or less.');
-        echo $totalPercentageQuery;
-        exit();
-    }
-
-    if ($examType == 'final') {
-        $finalCountQuery = "SELECT COUNT(*) AS final_count FROM exam_list WHERE courseID = $courseId AND type = 'final'";
-        $finalCountResult = $conn->query($finalCountQuery);
-        $finalCountRow = $finalCountResult->fetch_assoc();
-        $finalCount = $finalCountRow["final_count"];
-        if ($finalCount > 0) {
-            function_alert('Only one final exam can be added.');
-            exit();
-        }
-    }
-
-    $updatedBy = $instructorName; 
-    $updateDate = date('Y-m-d H:i:s'); 
-
-    $sql = "INSERT INTO exam_list (courseID, examName, type, percentage, updated_by, update_date) 
-            VALUES ('$courseId', '$courseName', '$examType', '$percentage', '$updatedBy', '$updateDate')";
-
-    if ($conn->query($sql) === TRUE) {
-        function_alert('Exam successfully added.');
-    } else {
-        $errorMessage = "Error: " . $sql . "<br>" . $conn->error;
-        function_alert($errorMessage);
-    }
-} 
-
 $sql = "SELECT * FROM courses INNER JOIN instructors ON courses.instructorID = instructors.instructorID WHERE instructors.instructorID = $instructorID"; 
 $result = $conn->query($sql);
 ?>
@@ -81,33 +29,23 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Course Selection</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
+        .alert {
+            display: none;
         }
     </style>
 </head>
 <body>
     <?php include 'CUF/teacher_header.php'; ?>
     <div class="container-fluid" style="display:contents;">
-        <div class="row" >
+        <div class="row">
             <?php include 'CUF/teacher_navbar.php'; ?>
 
             <main role="main" class="col-md-9 px-md-4">
                 <h2 class="mt-4">Your Courses</h2>
                 <div class="table-responsive">
-                    <table>
+                    <table class="table table-bordered">
                         <tr>
                             <th>ID</th>
                             <th>Course Name</th>
@@ -129,13 +67,15 @@ $result = $conn->query($sql);
                             <?php endwhile; ?>
                         <?php else: ?>
                             <tr>
-                                <td colspan="4">No courses found.</td>
+                                <td colspan="6">No courses found.</td>
                             </tr>
                         <?php endif; ?>
                     </table>
                 </div>
                 <h2 class="mt-4">Create Exam</h2>
-                <form id="courseForm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+                <div class="alert alert-success" id="successAlert"></div>
+                <div class="alert alert-danger" id="errorAlert"></div>
+                <form id="courseForm">
                     <div class="form-group">
                         <label for="courseId">Course ID *</label>
                         <input type="text" class="form-control" id="courseId" name="courseId" placeholder="Enter Course ID">
@@ -143,6 +83,10 @@ $result = $conn->query($sql);
                     <div class="form-group">
                         <label for="courseName">Course Name</label>
                         <input type="text" class="form-control" id="courseName" name="courseName" placeholder="Enter Course Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="examDate">Exam Date</label>
+                        <input type="text" class="form-control" id="examDate" name="examDate" placeholder="Select Exam Date">
                     </div>
                     <div id="gradingFields">
                         <div class="form-group">
@@ -165,29 +109,47 @@ $result = $conn->query($sql);
                     </div>
                     <button type="submit" class="btn btn-primary">Add Exam</button>
                 </form>
-
-                
             </main>
         </div>
     </div>
-    <script>
-        document.getElementById('courseForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            var courseID = document.getElementById('courseId').value;
-            var courseName = document.getElementById('courseName').value;
-            
-
-            if (courseID < 0 || isNaN(courseID) ) {
-                alert('Please fill out all fields correctly.');
-                return;
-            }
-            
-            this.submit();
-        });
-    </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#examDate').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true
+            });
+
+            $('#addCourseForm').submit(function(event) {
+                event.preventDefault();
+                $('#courseSuccessAlert').hide();
+                $('#courseErrorAlert').hide();
+
+                $.ajax({
+                    url: './ajax_add_course.php',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        response = JSON.parse(response);
+                        if (response.status === 'success') {
+                            $('#courseSuccessAlert').text(response.message).show();
+                            $('#courseErrorAlert').hide();
+                            setTimeout(() => { location.reload(); }, 2000);
+                        } else {
+                            $('#courseErrorAlert').text(response.message).show();
+                            $('#courseSuccessAlert').hide();
+                        }
+                    },
+                    error: function() {
+                        $('#courseErrorAlert').text('An error occurred while processing your request.').show();
+                        $('#courseSuccessAlert').hide();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

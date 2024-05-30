@@ -38,20 +38,7 @@ $conn->close();
     <title>Show Exams</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
+        
     </style>
 </head>
 <body>
@@ -65,7 +52,7 @@ $conn->close();
                 
                     <h2 class="mt-4">Show Exams</h2>
                     <div class="table-responsive">
-                        <table>
+                        <table class="table table-bordered">
                             <tr>
                                 <th>Exam Name</th>
                                 <th>Exam Type</th>
